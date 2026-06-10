@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import api from '@/lib/api';
 
-import bgImage from '@/assets/bg-img.jpg';
+import bgImage from '@/assets/bg-img-col.jpeg';
 
 import logo from '@/assets/bg-logo.jpg';
 
