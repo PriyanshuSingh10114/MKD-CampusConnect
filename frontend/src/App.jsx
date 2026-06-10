@@ -16,13 +16,21 @@ import Settings from './pages/Settings';
 
 const queryClient = new QueryClient();
 
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<DashboardLayout />}>
+          <Route path="/" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="students" element={<Admissions />} />

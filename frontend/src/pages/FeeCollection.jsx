@@ -5,25 +5,38 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import api from '@/lib/api';
 
 export default function FeeCollection() {
   const { toast } = useToast();
   const [studentId, setStudentId] = useState('');
   const [amount, setAmount] = useState('');
+  const [mode, setMode] = useState('Cash');
 
-  const handleCollect = (e) => {
+  const handleCollect = async (e) => {
     e.preventDefault();
-    toast({ title: 'Payment Recorded', description: `₹${amount} recorded for student ${studentId}.` });
-    setStudentId('');
-    setAmount('');
+    try {
+      // In a real app we'd fetch the student's total fee structure based on their course, but for now we hardcode totalFee for mock
+      const res = await api.post(`/fees/payments/${studentId}`, {
+        amountPaid: Number(amount),
+        paymentMode: mode,
+        totalFee: 60000,
+        remarks: 'Manual offline collection'
+      });
+      toast({ title: 'Payment Recorded', description: `₹${amount} recorded and receipt generated: ${res.data.data.receiptNumber}` });
+      setStudentId('');
+      setAmount('');
+    } catch (err) {
+      toast({ title: 'Error', description: 'Failed to record payment.', variant: 'destructive' });
+    }
   };
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">Offline Fee Collection</h2>
+      <h2 className="text-3xl font-bold tracking-tight text-indigo-900">Offline Fee Collection</h2>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <Card>
+        <Card className="shadow-lg border-t-4 border-indigo-500">
           <CardHeader>
             <CardTitle>Record Payment</CardTitle>
           </CardHeader>
@@ -39,7 +52,7 @@ export default function FeeCollection() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="mode">Payment Mode</Label>
-                <select id="mode" className="w-full p-2 border rounded-md">
+                <select id="mode" className="w-full p-2 border rounded-md" value={mode} onChange={e => setMode(e.target.value)}>
                   <option>Cash</option>
                   <option>UPI</option>
                   <option>Bank Transfer</option>
@@ -47,12 +60,12 @@ export default function FeeCollection() {
                   <option>Demand Draft</option>
                 </select>
               </div>
-              <Button type="submit" className="w-full">Record Payment & Generate Receipt</Button>
+              <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700">Record Payment & Generate Receipt</Button>
             </form>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-lg border-t-4 border-emerald-500">
           <CardHeader>
             <CardTitle>Recent Collections</CardTitle>
           </CardHeader>

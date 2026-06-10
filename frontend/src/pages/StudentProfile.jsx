@@ -1,31 +1,55 @@
+import { useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import api from '@/lib/api';
 
 export default function StudentProfile() {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id');
+
+  const { data: student, isLoading } = useQuery({
+    queryKey: ['studentProfile', id],
+    queryFn: async () => {
+      if (!id) return null;
+      const res = await api.get(`/students/${id}`);
+      return res.data.data;
+    },
+    enabled: !!id
+  });
+
+  if (!id) return <div className="p-8 text-center text-muted-foreground">Select a student from the Admissions List first.</div>;
+  if (isLoading) return <div className="p-8 text-center">Loading Profile...</div>;
+  if (!student) return <div className="p-8 text-center text-red-500">Student not found.</div>;
+
+  const initials = student.personalDetails?.studentName?.slice(0, 2).toUpperCase() || 'ST';
+
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">Student Profile</h2>
+      <h2 className="text-3xl font-bold tracking-tight text-indigo-900">Student Profile</h2>
 
       <div className="grid md:grid-cols-3 gap-6">
-        <Card className="col-span-1">
+        <Card className="col-span-1 shadow-md border-t-4 border-indigo-500">
           <CardHeader>
-            <div className="w-24 h-24 bg-slate-200 rounded-full mx-auto flex items-center justify-center text-slate-500 font-bold text-3xl">
-              RS
+            <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full mx-auto flex items-center justify-center text-white font-bold text-3xl shadow-lg">
+              {initials}
             </div>
-            <CardTitle className="text-center mt-4">Rahul Sharma</CardTitle>
+            <CardTitle className="text-center mt-4 text-indigo-900">{student.personalDetails?.studentName || 'Unknown Student'}</CardTitle>
             <div className="text-center">
-              <Badge>Active</Badge>
+              <Badge className={student.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-800'}>
+                {student.status || 'Active'}
+              </Badge>
             </div>
           </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <div className="flex justify-between"><span className="text-muted-foreground">ID:</span> <span>ADM-1001</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Course:</span> <span>B.Tech CSE</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Year:</span> <span>Year 2</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Phone:</span> <span>+91 9876543210</span></div>
+          <CardContent className="space-y-2 text-sm bg-indigo-50/50 rounded-b-xl pt-4">
+            <div className="flex justify-between"><span className="text-muted-foreground">ID:</span> <span className="font-semibold">{student.admissionNumber}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Course:</span> <span className="font-semibold">{student.admissions?.[0]?.course || 'Not Assigned'}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Session:</span> <span className="font-semibold">{student.admissions?.[0]?.session || 'N/A'}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Phone:</span> <span className="font-semibold">{student.personalDetails?.mobile || 'N/A'}</span></div>
           </CardContent>
         </Card>
 
-        <Card className="col-span-2">
+        <Card className="col-span-2 shadow-md border-t-4 border-emerald-500">
           <CardHeader>
             <CardTitle>Fee Timeline (4 Years)</CardTitle>
           </CardHeader>

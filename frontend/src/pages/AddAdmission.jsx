@@ -4,13 +4,29 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
+import api from '@/lib/api';
 
 export default function AddAdmission() {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    personalDetails: {},
+    addressDetails: {},
+    academicDetails: {},
+    course: 'B.Ed',
+    session: '2026-2027'
+  });
   
-  const handleAddAdmission = (e) => {
+  const handleAddAdmission = async (e) => {
     e.preventDefault();
-    toast({ title: 'Success', description: 'Admission Form Submitted. Generated ID: MKD-2026-0001' });
+    try {
+      const res = await api.post('/students', formData);
+      toast({ title: 'Success', description: `Admission Form Submitted. ID: ${res.data.data.admissionNumber}` });
+      navigate('/students');
+    } catch (err) {
+      toast({ title: 'Error', description: 'Failed to create admission', variant: 'destructive' });
+    }
   };
 
   return (
@@ -27,21 +43,23 @@ export default function AddAdmission() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>Student Name</Label>
-                <Input required />
+                <Input required onChange={e => setFormData({...formData, personalDetails: {...formData.personalDetails, studentName: e.target.value}})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>Father Name</Label><Input required /></div>
-                <div className="space-y-2"><Label>Mother Name</Label><Input required /></div>
+                <div className="space-y-2"><Label>Father Name</Label><Input required onChange={e => setFormData({...formData, personalDetails: {...formData.personalDetails, fatherName: e.target.value}})} /></div>
+                <div className="space-y-2"><Label>Mother Name</Label><Input required onChange={e => setFormData({...formData, personalDetails: {...formData.personalDetails, motherName: e.target.value}})} /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>DOB</Label><Input type="date" required /></div>
+                <div className="space-y-2"><Label>DOB</Label><Input type="date" required onChange={e => setFormData({...formData, personalDetails: {...formData.personalDetails, dob: e.target.value}})} /></div>
                 <div className="space-y-2"><Label>Gender</Label>
-                  <select className="w-full p-2 border rounded-md"><option>Male</option><option>Female</option><option>Other</option></select>
+                  <select className="w-full p-2 border rounded-md" onChange={e => setFormData({...formData, personalDetails: {...formData.personalDetails, gender: e.target.value}})}>
+                    <option>Male</option><option>Female</option><option>Other</option>
+                  </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>Mobile</Label><Input required /></div>
-                <div className="space-y-2"><Label>Aadhaar</Label><Input required /></div>
+                <div className="space-y-2"><Label>Mobile</Label><Input required onChange={e => setFormData({...formData, personalDetails: {...formData.personalDetails, mobile: e.target.value}})} /></div>
+                <div className="space-y-2"><Label>Aadhaar</Label><Input required onChange={e => setFormData({...formData, personalDetails: {...formData.personalDetails, aadhaarNumber: e.target.value}})} /></div>
               </div>
             </CardContent>
           </Card>
