@@ -51,6 +51,24 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        brand: {
+          primary: '#4F46E5',     // Indigo 600
+          hover: '#4338CA',       // Indigo 700
+          secondary: '#1E293B',   // Slate 800
+          accent: '#F97316',      // Orange 500
+        },
+        status: {
+          success: '#22C55E',     // Green 500
+          warning: '#F59E0B',     // Amber 500
+          danger: '#EF4444',      // Red 500
+          info: '#3B82F6',        // Blue 500
+        },
+        layout: {
+          bg: '#F8FAFC',          // Slate 50 (Light Mode)
+          'bg-dark': '#0F172A',   // Slate 900 (Dark Mode)
+          card: '#FFFFFF',        // White (Light Mode)
+          'card-dark': '#1E293B', // Slate 800 (Dark Mode)
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
