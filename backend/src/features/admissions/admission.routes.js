@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get('/', roleMiddleware(['SUPER_ADMIN', 'ADMISSION_OFFICER', 'MANAGEMENT']), admissionController.getAdmissions);
-router.get('/:id', roleMiddleware(['SUPER_ADMIN', 'ADMISSION_OFFICER', 'MANAGEMENT']), admissionController.getAdmissionById);
-router.patch('/:id/status', roleMiddleware(['SUPER_ADMIN', 'ADMISSION_OFFICER']), admissionController.updateAdmissionStatus);
+router.get('/', roleMiddleware(['Super Admin', 'Principal', 'Admission Staff']), admissionController.getAdmissions);
+router.get('/:id', roleMiddleware(['Super Admin', 'Principal', 'Admission Staff']), admissionController.getAdmissionById);
+router.patch('/:id/status', roleMiddleware(['Super Admin', 'Principal', 'Admission Staff']), admissionController.updateAdmissionStatus);
 
 module.exports = router;
