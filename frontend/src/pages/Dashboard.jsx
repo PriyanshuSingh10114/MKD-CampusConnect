@@ -59,58 +59,67 @@ export default function Dashboard() {
       </h2>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-l-4 border-indigo-500">
+        <Card className="bg-white dark:bg-layout-card-dark border-slate-200 dark:border-slate-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
               Total Students
             </CardTitle>
-            <Users className="h-4 w-4 text-indigo-500" />
+            <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-full">
+              <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-indigo-600">
+            <div className="text-3xl font-bold text-slate-900 dark:text-white">
               {totalStudents}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-pink-500">
+        <Card className="bg-white dark:bg-layout-card-dark border-slate-200 dark:border-slate-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
               New Admissions
             </CardTitle>
-            <GraduationCap className="h-4 w-4 text-pink-500" />
+            <div className="p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-full">
+              <GraduationCap className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-pink-600">
+            <div className="text-3xl font-bold text-slate-900 dark:text-white">
               {newAdmissions}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-green-500">
+        <Card className="bg-white dark:bg-layout-card-dark border-slate-200 dark:border-slate-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
               Total Revenue
             </CardTitle>
-            <IndianRupee className="h-4 w-4 text-green-500" />
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-full">
+              <IndianRupee className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-600">
+            <div className="text-3xl font-bold text-slate-900 dark:text-white">
               ₹{totalRevenue.toLocaleString()}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-cyan-500">
+        <Card className="bg-white dark:bg-layout-card-dark border-slate-200 dark:border-slate-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              Active Courses
+            <CardTitle className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              Pending Fees
             </CardTitle>
-            <Activity className="h-4 w-4 text-cyan-500" />
+            <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded-full">
+              <Activity className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-cyan-600">
-              {activeCourses}
+            <div className="text-3xl font-bold text-slate-900 dark:text-white">
+              {/* Replace activeCourses with Pending fees mock or real data later */}
+              ₹{(totalRevenue * 0.15).toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -134,8 +143,8 @@ export default function Dashboard() {
                   <Line
                     type="monotone"
                     dataKey="total"
-                    stroke="#4f46e5"
-                    strokeWidth={3}
+                    stroke="#2563EB"
+                    strokeWidth={4}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -159,7 +168,7 @@ export default function Dashboard() {
 
                   <Bar
                     dataKey="students"
-                    fill="#ec4899"
+                    fill="#1E293B"
                     radius={[6, 6, 0, 0]}
                   />
                 </BarChart>

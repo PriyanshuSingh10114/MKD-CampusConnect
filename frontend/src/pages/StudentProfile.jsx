@@ -28,16 +28,16 @@ export default function StudentProfile() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight text-indigo-900">Student Profile</h2>
+      <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Student Profile</h2>
 
       <div className="grid md:grid-cols-3 gap-6">
         {/* Profile Card */}
-        <Card className="col-span-1 shadow-md border-t-4 border-indigo-500 h-fit">
+        <Card className="col-span-1 shadow-lg border-t-4 border-brand-primary h-fit">
           <CardHeader>
-            <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full mx-auto flex items-center justify-center text-white font-bold text-3xl shadow-lg">
+            <div className="w-24 h-24 bg-primary rounded-full mx-auto flex items-center justify-center text-white font-bold text-3xl shadow-sm">
               {initials}
             </div>
-            <CardTitle className="text-center mt-4 text-indigo-900">{student.personalDetails?.studentName || 'Unknown Student'}</CardTitle>
+            <CardTitle className="text-center mt-4 text-brand-secondary dark:text-white">{student.personalDetails?.studentName || 'Unknown Student'}</CardTitle>
             <div className="text-center text-sm font-semibold text-slate-500">{student.admissionNumber}</div>
             <div className="text-center mt-2">
               <Badge className={student.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-800'}>
@@ -45,7 +45,7 @@ export default function StudentProfile() {
               </Badge>
             </div>
           </CardHeader>
-          <CardContent className="space-y-2 text-sm bg-indigo-50/50 rounded-b-xl pt-4">
+          <CardContent className="space-y-2 text-sm bg-brand-primary/5 dark:bg-slate-800/50 rounded-b-xl pt-4">
             <div className="flex justify-between"><span className="text-muted-foreground">Course:</span> <span className="font-semibold">{admission.course || 'Not Assigned'}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">Session:</span> <span className="font-semibold">{admission.session || 'N/A'}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">Phone:</span> <span className="font-semibold">{student.personalDetails?.mobile || 'N/A'}</span></div>
@@ -85,27 +85,27 @@ export default function StudentProfile() {
           </Card>
 
           {/* Fee Summary */}
-          <Card className="shadow-md border-t-4 border-emerald-500">
+          <Card className="shadow-lg border-t-4 border-status-success">
             <CardHeader>
               <CardTitle>Fee Summary</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-4 gap-4 text-center">
-                <div className="p-4 bg-slate-50 rounded-lg">
+                <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
                   <div className="text-sm text-muted-foreground">Total Fee</div>
-                  <div className="text-xl font-bold text-slate-800">₹{feeSummary?.totalFee?.toLocaleString() || 0}</div>
+                  <div className="text-xl font-bold text-slate-800 dark:text-white">₹{feeSummary?.totalFee?.toLocaleString() || 0}</div>
                 </div>
-                <div className="p-4 bg-emerald-50 rounded-lg">
-                  <div className="text-sm text-emerald-600">Paid Fee</div>
-                  <div className="text-xl font-bold text-emerald-700">₹{feeSummary?.paidFee?.toLocaleString() || 0}</div>
+                <div className="p-4 bg-status-success/10 rounded-lg">
+                  <div className="text-sm text-status-success">Paid Fee</div>
+                  <div className="text-xl font-bold text-status-success">₹{feeSummary?.paidFee?.toLocaleString() || 0}</div>
                 </div>
-                <div className="p-4 bg-rose-50 rounded-lg">
-                  <div className="text-sm text-rose-600">Pending Fee</div>
-                  <div className="text-xl font-bold text-rose-700">₹{feeSummary?.pendingFee?.toLocaleString() || 0}</div>
+                <div className="p-4 bg-status-danger/10 rounded-lg">
+                  <div className="text-sm text-status-danger">Pending Fee</div>
+                  <div className="text-xl font-bold text-status-danger">₹{feeSummary?.pendingFee?.toLocaleString() || 0}</div>
                 </div>
-                <div className="p-4 bg-indigo-50 rounded-lg">
-                  <div className="text-sm text-indigo-600">Installments</div>
-                  <div className="text-xl font-bold text-indigo-700">{feeSummary?.installmentsPaid || 0}</div>
+                <div className="p-4 bg-brand-primary/10 rounded-lg">
+                  <div className="text-sm text-brand-primary">Installments</div>
+                  <div className="text-xl font-bold text-brand-primary">{feeSummary?.installmentsPaid || 0}</div>
                 </div>
               </div>
             </CardContent>
@@ -130,13 +130,13 @@ export default function StudentProfile() {
                     </thead>
                     <tbody>
                       {recentPayments.map((payment) => (
-                        <tr key={payment._id} className="border-b hover:bg-slate-50/50">
-                          <td className="px-4 py-3 font-medium text-indigo-600">{payment.receiptNumber}</td>
+                        <tr key={payment._id} className="border-b dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800">
+                          <td className="px-4 py-3 font-medium text-brand-primary">{payment.receiptNumber}</td>
                           <td className="px-4 py-3">{new Date(payment.paymentDate).toLocaleDateString()}</td>
                           <td className="px-4 py-3">
                             <Badge variant="outline">{payment.paymentMode}</Badge>
                           </td>
-                          <td className="px-4 py-3 text-right font-semibold text-emerald-600">₹{payment.amountPaid?.toLocaleString()}</td>
+                          <td className="px-4 py-3 text-right font-semibold text-status-success">₹{payment.amountPaid?.toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>

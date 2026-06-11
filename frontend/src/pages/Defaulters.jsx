@@ -14,37 +14,37 @@ export default function Defaulters() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Defaulter Management</h2>
+        <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Defaulter Management</h2>
         <div className="flex space-x-2">
           <Button variant="outline"><Download className="w-4 h-4 mr-2" /> Export PDF</Button>
-          <Button onClick={handleSendReminder}><Bell className="w-4 h-4 mr-2" /> Send Reminders</Button>
+          <Button onClick={handleSendReminder} className="bg-primary hover:bg-primary/90 text-white shadow-sm border-0"><Bell className="w-4 h-4 mr-2" /> Send Reminders</Button>
         </div>
       </div>
 
-      <Card>
+      <Card className="shadow-lg border-t-4 border-status-danger">
         <CardHeader>
           <CardTitle>Outstanding Fees List</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 border rounded-lg bg-red-50 dark:bg-red-900/10">
+            <div className="flex items-center justify-between p-4 border dark:border-slate-800 rounded-lg bg-status-danger/10">
               <div>
-                <p className="font-semibold">Amit Kumar</p>
+                <p className="font-semibold text-brand-secondary dark:text-white">Amit Kumar</p>
                 <p className="text-sm text-muted-foreground">ADM-1042 • B.Tech ECE • Year 3</p>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-red-600">Due: ₹45,000</p>
-                <Badge variant="destructive" className="mt-1">Unpaid</Badge>
+                <p className="font-semibold text-status-danger">Due: ₹45,000</p>
+                <Badge className="bg-status-danger text-white hover:bg-status-danger/80 mt-1">Unpaid</Badge>
               </div>
             </div>
-            <div className="flex items-center justify-between p-4 border rounded-lg bg-yellow-50 dark:bg-yellow-900/10">
+            <div className="flex items-center justify-between p-4 border dark:border-slate-800 rounded-lg bg-status-warning/10">
               <div>
-                <p className="font-semibold">Sneha Roy</p>
+                <p className="font-semibold text-brand-secondary dark:text-white">Sneha Roy</p>
                 <p className="text-sm text-muted-foreground">ADM-1088 • MBA • Year 1</p>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-yellow-600">Due: ₹15,000</p>
-                <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 mt-1">Partial</Badge>
+                <p className="font-semibold text-status-warning">Due: ₹15,000</p>
+                <Badge className="bg-status-warning/20 text-status-warning hover:bg-status-warning/30 mt-1">Partial</Badge>
               </div>
             </div>
           </div>

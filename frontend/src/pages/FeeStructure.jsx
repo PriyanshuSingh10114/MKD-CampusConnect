@@ -52,10 +52,10 @@ export default function FeeStructure() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight text-indigo-900">Fee Structure Setup</h2>
+      <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Fee Structure Setup</h2>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <Card className="shadow-lg border-t-4 border-indigo-500">
+        <Card className="shadow-lg border-t-4 border-brand-primary">
           <CardHeader>
             <CardTitle>Create Fee Structure</CardTitle>
           </CardHeader>
@@ -87,9 +87,9 @@ export default function FeeStructure() {
                 <div className="space-y-2"><Label>Other Fee (₹)</Label><Input type="number" value={formData.otherFee} onChange={e => setFormData({...formData, otherFee: Number(e.target.value)})} /></div>
               </div>
 
-              <div className="pt-4 border-t border-slate-200 mt-4 flex justify-between items-center bg-indigo-50 p-4 rounded-lg">
-                <div className="text-lg font-bold text-indigo-900">Total: <span className="text-indigo-600">₹{total.toLocaleString()}</span></div>
-                <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700" disabled={createMutation.isPending}>
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 mt-4 flex justify-between items-center bg-brand-primary/5 dark:bg-brand-primary/10 p-4 rounded-lg">
+                <div className="text-lg font-bold text-brand-secondary dark:text-white">Total: <span className="text-brand-primary">₹{total.toLocaleString()}</span></div>
+                <Button type="submit" className="bg-primary hover:bg-primary/90 text-white shadow-sm border-0" disabled={createMutation.isPending}>
                   {createMutation.isPending ? 'Saving...' : 'Save Structure'}
                 </Button>
               </div>
@@ -97,7 +97,7 @@ export default function FeeStructure() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg border-t-4 border-emerald-500 h-fit">
+        <Card className="shadow-lg border-t-4 border-status-success h-fit">
           <CardHeader>
             <CardTitle>Existing Structures</CardTitle>
           </CardHeader>
@@ -107,14 +107,14 @@ export default function FeeStructure() {
             ) : structures && structures.length > 0 ? (
               <div className="space-y-4">
                 {structures.map(structure => (
-                  <div key={structure._id} className="flex justify-between items-center p-4 border rounded-lg hover:bg-slate-50 transition-colors">
+                  <div key={structure._id} className="flex justify-between items-center p-4 border dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                     <div>
                       <div className="font-semibold text-lg">{structure.course}</div>
                       <div className="text-sm text-muted-foreground">Year: {structure.academicYear || 'N/A'}</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-bold text-emerald-600">₹{structure.totalFee?.toLocaleString()}</div>
-                      <Button variant="ghost" size="sm" className="text-red-500 mt-1 h-6 px-2" onClick={() => {
+                      <div className="font-bold text-status-success">₹{structure.totalFee?.toLocaleString()}</div>
+                      <Button variant="ghost" size="sm" className="text-status-danger hover:text-status-danger hover:bg-status-danger/10 mt-1 h-6 px-2" onClick={() => {
                         if(window.confirm('Delete this structure?')) deleteMutation.mutate(structure._id);
                       }}>
                         Delete

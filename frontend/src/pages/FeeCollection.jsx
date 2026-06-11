@@ -86,10 +86,10 @@ export default function FeeCollection() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight text-indigo-900">Fee Collection</h2>
+      <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Fee Collection</h2>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="shadow-lg border-t-4 border-indigo-500">
+        <Card className="shadow-lg border-t-4 border-brand-primary">
           <CardHeader>
             <CardTitle>Record Payment</CardTitle>
           </CardHeader>
@@ -130,18 +130,18 @@ export default function FeeCollection() {
             
             {selectedStudentId && feeDetails && (
               <div className="space-y-6">
-                <div className="bg-indigo-50 p-4 rounded-lg flex justify-between items-start border border-indigo-100">
+                <div className="bg-brand-primary/5 p-4 rounded-lg flex justify-between items-start border border-brand-primary/20">
                   <div>
-                    <h3 className="font-bold text-indigo-900">{feeDetails.student.studentName}</h3>
-                    <p className="text-sm text-indigo-700">{feeDetails.student.admissionNumber} • {feeDetails.student.course}</p>
+                    <h3 className="font-bold text-brand-secondary dark:text-white">{feeDetails.student.studentName}</h3>
+                    <p className="text-sm text-brand-primary">{feeDetails.student.admissionNumber} • {feeDetails.student.course}</p>
                   </div>
                   <Button variant="outline" size="sm" onClick={() => setSelectedStudentId(null)}>Change Student</Button>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 text-center text-sm">
-                  <div className="bg-slate-50 p-2 rounded-md border"><span className="block text-xs text-muted-foreground">Total Fee</span><span className="font-bold">₹{feeDetails.feeSummary.totalFee?.toLocaleString()}</span></div>
-                  <div className="bg-emerald-50 p-2 rounded-md border border-emerald-100"><span className="block text-xs text-emerald-600">Paid Fee</span><span className="font-bold text-emerald-700">₹{feeDetails.feeSummary.paidFee?.toLocaleString()}</span></div>
-                  <div className="bg-rose-50 p-2 rounded-md border border-rose-100"><span className="block text-xs text-rose-600">Pending Fee</span><span className="font-bold text-rose-700">₹{feeDetails.feeSummary.pendingFee?.toLocaleString()}</span></div>
+                  <div className="bg-slate-50 dark:bg-slate-800 p-2 rounded-md border"><span className="block text-xs text-muted-foreground">Total Fee</span><span className="font-bold dark:text-white">₹{feeDetails.feeSummary.totalFee?.toLocaleString()}</span></div>
+                  <div className="bg-status-success/10 p-2 rounded-md border border-status-success/20"><span className="block text-xs text-status-success">Paid Fee</span><span className="font-bold text-status-success">₹{feeDetails.feeSummary.paidFee?.toLocaleString()}</span></div>
+                  <div className="bg-status-danger/10 p-2 rounded-md border border-status-danger/20"><span className="block text-xs text-status-danger">Pending Fee</span><span className="font-bold text-status-danger">₹{feeDetails.feeSummary.pendingFee?.toLocaleString()}</span></div>
                 </div>
 
                 <form onSubmit={handleCollect} className="space-y-4 pt-4 border-t">
@@ -169,7 +169,7 @@ export default function FeeCollection() {
                     <Label htmlFor="remarks">Remarks</Label>
                     <Input id="remarks" value={remarks} onChange={e => setRemarks(e.target.value)} placeholder="e.g. Second Installment" />
                   </div>
-                  <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={collectMutation.isPending || feeDetails.feeSummary.pendingFee === 0}>
+                  <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white shadow-sm border-0" disabled={collectMutation.isPending || feeDetails.feeSummary.pendingFee === 0}>
                     {collectMutation.isPending ? 'Processing...' : 'Record Payment & Generate Receipt'}
                   </Button>
                 </form>
@@ -179,7 +179,7 @@ export default function FeeCollection() {
         </Card>
 
         {/* Step 4: Recent Collections */}
-        <Card className="shadow-lg border-t-4 border-emerald-500 h-fit">
+        <Card className="shadow-lg border-t-4 border-status-success h-fit">
           <CardHeader>
             <CardTitle>Recent Collections</CardTitle>
           </CardHeader>
@@ -187,14 +187,14 @@ export default function FeeCollection() {
             {recentReceipts && recentReceipts.length > 0 ? (
               <div className="space-y-4">
                 {recentReceipts.map(receipt => (
-                  <div key={receipt._id} className="flex justify-between items-center border-b pb-3 last:border-0">
+                  <div key={receipt._id} className="flex justify-between items-center border-b dark:border-slate-800 pb-3 last:border-0">
                     <div>
-                      <p className="font-semibold text-indigo-700">{receipt.receiptNumber}</p>
-                      <p className="text-sm text-slate-800">{receipt.student?.personalDetails?.studentName || 'Unknown'} <span className="text-muted-foreground">({receipt.student?.admissionNumber})</span></p>
+                      <p className="font-semibold text-brand-primary">{receipt.receiptNumber}</p>
+                      <p className="text-sm text-brand-secondary dark:text-slate-200">{receipt.student?.personalDetails?.studentName || 'Unknown'} <span className="text-muted-foreground">({receipt.student?.admissionNumber})</span></p>
                       <p className="text-xs text-muted-foreground">{new Date(receipt.paymentDate).toLocaleString()} • {receipt.paymentMode}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-emerald-600 text-lg">₹{receipt.amountPaid?.toLocaleString()}</p>
+                      <p className="font-bold text-status-success text-lg">₹{receipt.amountPaid?.toLocaleString()}</p>
                     </div>
                   </div>
                 ))}

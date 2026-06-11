@@ -51,7 +51,7 @@ export default function DashboardLayout() {
       <aside className="w-64 bg-brand-secondary dark:bg-slate-900 border-r border-slate-800 flex flex-col z-20">
 
         {/* Logo Section */}
-        <div className="h-20 flex items-center px-4 border-b border-slate-800">
+        <div className="h-20 flex items-center px-4 border-b border-white/10">
           <div className="flex items-center gap-3">
             <img
               src={logo}
@@ -60,11 +60,11 @@ export default function DashboardLayout() {
             />
 
             <div>
-              <h1 className="text-base font-bold text-white leading-tight">
-                MKD GROUP
+              <h1 className="text-base font-bold text-white leading-tight uppercase">
+                M.K.D. Group
               </h1>
 
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-brand-accent">
                 Admission ERP
               </p>
             </div>
@@ -84,13 +84,13 @@ export default function DashboardLayout() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                  ? 'bg-brand-primary/15 text-brand-primary border-l-4 border-brand-primary shadow-sm'
-                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800 border-l-4 border-transparent'
+                className={`group flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
+                  ? 'bg-brand-primary/10 text-brand-primary border-l-4 border-brand-primary shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800 border-l-4 border-transparent'
                   }`}
               >
                 <item.icon
-                  className={`w-5 h-5 mr-3 ${isActive ? 'text-brand-primary' : 'text-slate-500'
+                  className={`w-5 h-5 mr-3 transition-colors ${isActive ? 'text-brand-primary' : 'text-slate-400 group-hover:text-white'
                     }`}
                 />
                 {item.name}
@@ -100,13 +100,13 @@ export default function DashboardLayout() {
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-4 border-t border-white/10">
           <Button
             variant="ghost"
-            className="w-full justify-start text-slate-400 hover:text-white hover:bg-slate-800 h-10 px-3"
+            className="w-full justify-start text-slate-300 hover:text-white hover:bg-status-danger/20 h-10 px-3 transition-colors group"
             onClick={handleLogout}
           >
-            <LogOut className="w-5 h-5 mr-3" />
+            <LogOut className="w-5 h-5 mr-3 text-slate-400 group-hover:text-status-danger" />
             Sign Out
           </Button>
         </div>
@@ -169,7 +169,7 @@ export default function DashboardLayout() {
                   className="w-10 h-10 rounded-full object-cover border-2 border-brand-primary shadow"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-primary to-brand-hover text-white flex items-center justify-center font-bold shadow">
+                <div className="w-10 h-10 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold shadow-sm">
                   {userName.charAt(0).toUpperCase()}
                 </div>
               )}

@@ -31,12 +31,12 @@ export default function AddAdmission() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">Create Admission</h2>
+      <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Create Admission</h2>
 
       <form onSubmit={handleAddAdmission}>
         <div className="grid gap-6 md:grid-cols-2">
           {/* Personal Details */}
-          <Card>
+          <Card className="shadow-md border-t-4 border-brand-primary">
             <CardHeader>
               <CardTitle>Personal Details</CardTitle>
             </CardHeader>
@@ -66,7 +66,7 @@ export default function AddAdmission() {
 
           {/* Admission & Academic */}
           <div className="space-y-6">
-            <Card>
+            <Card className="shadow-md border-t-4 border-status-warning">
               <CardHeader>
                 <CardTitle>Admission Details</CardTitle>
               </CardHeader>
@@ -85,7 +85,7 @@ export default function AddAdmission() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="shadow-md border-t-4 border-brand-secondary">
               <CardHeader>
                 <CardTitle>Address Details</CardTitle>
               </CardHeader>
@@ -98,7 +98,7 @@ export default function AddAdmission() {
               </CardContent>
             </Card>
             
-            <Button type="submit" className="w-full h-12 text-lg">Submit Admission</Button>
+            <Button type="submit" className="w-full h-12 text-lg font-semibold bg-primary hover:bg-primary/90 text-white transition-all duration-300 shadow-sm border-0">Submit Admission</Button>
           </div>
         </div>
       </form>

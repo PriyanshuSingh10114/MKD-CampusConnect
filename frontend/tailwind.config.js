@@ -52,16 +52,16 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
         brand: {
-          primary: '#4F46E5',     // Indigo 600
-          hover: '#4338CA',       // Indigo 700
-          secondary: '#1E293B',   // Slate 800
-          accent: '#F97316',      // Orange 500
+          primary: '#2563EB',     // Blue
+          hover: '#1D4ED8',       // Darker Blue
+          secondary: '#1E293B',   // Navy
+          accent: '#F59E0B',      // Warning
         },
         status: {
-          success: '#22C55E',     // Green 500
-          warning: '#F59E0B',     // Amber 500
-          danger: '#EF4444',      // Red 500
-          info: '#3B82F6',        // Blue 500
+          success: '#16A34A',     // Green
+          warning: '#F59E0B',     // Amber
+          danger: '#DC2626',      // Red
+          info: '#3B82F6',        // Blue
         },
         layout: {
           bg: '#F8FAFC',          // Slate 50 (Light Mode)

@@ -78,15 +78,19 @@ export default function Login() {
             />
           </div>
 
-          <CardTitle className="text-3xl font-bold tracking-wide leading-tight">
-            MKD GROUP OF
-            <br />
-            INSTITUTIONS
+          <CardTitle className="text-2xl font-bold tracking-wide leading-tight uppercase">
+            M.K.D. Group of Education
           </CardTitle>
 
-          <CardDescription className="text-slate-200 text-base">
-            Admission & Fee Management Portal
+          <CardDescription className="text-slate-200 text-sm font-medium">
+            Maa Kamla Devi Shri Pitambara Vidyapeeth
           </CardDescription>
+          
+          <div className="pt-2">
+            <span className="inline-block bg-white/20 text-white text-xs px-3 py-1 rounded-full backdrop-blur-md border border-white/10">
+              Academic Session 2024-25
+            </span>
+          </div>
         </CardHeader>
 
         <form onSubmit={handleLogin}>
@@ -106,7 +110,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-white/10 border-white/30 text-white placeholder:text-slate-300 focus-visible:ring-indigo-500 focus-visible:border-indigo-500"
+                className="bg-white/10 border-white/30 text-white placeholder:text-slate-300 focus-visible:ring-primary focus-visible:border-primary"
               />
             </div>
 
@@ -125,7 +129,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-white/10 border-white/30 text-white placeholder:text-slate-300 focus-visible:ring-indigo-500 focus-visible:border-indigo-500"
+                className="bg-white/10 border-white/30 text-white placeholder:text-slate-300 focus-visible:ring-primary focus-visible:border-primary"
               />
             </div>
           </CardContent>
@@ -133,7 +137,7 @@ export default function Login() {
           <CardFooter className="pb-6 pt-2">
             <Button
               type="submit"
-              className="w-full h-12 text-lg font-semibold bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-lg"
+              className="w-full h-12 text-lg font-semibold bg-primary hover:bg-primary/90 text-white transition-all duration-300 shadow-md border-0"
             >
               Sign In
             </Button>

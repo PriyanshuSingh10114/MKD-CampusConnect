@@ -12,7 +12,7 @@ export default function Reports() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">Reports Module</h2>
+      <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Reports Module</h2>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
@@ -23,9 +23,9 @@ export default function Reports() {
           'Revenue Reports',
           'Audit Reports'
         ].map((report, idx) => (
-          <Card key={idx}>
+          <Card key={idx} className="bg-white dark:bg-layout-card-dark shadow-sm border-slate-200 dark:border-slate-800 hover:border-brand-primary transition-colors">
             <CardHeader>
-              <CardTitle className="text-lg">{report}</CardTitle>
+              <CardTitle className="text-lg text-brand-secondary dark:text-white">{report}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <p className="text-sm text-muted-foreground">Generate comprehensive data in PDF, Excel or CSV.</p>
