@@ -4,6 +4,10 @@ const { authMiddleware, roleMiddleware } = require('../../shared/middlewares/aut
 const router = express.Router();
 
 router.use(authMiddleware);
-router.post('/generate/:installmentId', roleMiddleware(['SUPER_ADMIN', 'ACCOUNTS_STAFF']), receiptController.generateReceipt);
+
+const receiptRoles = ['Super Admin', 'Principal', 'Accounts Staff'];
+
+router.get('/', roleMiddleware(receiptRoles), receiptController.getReceipts);
+router.get('/:id', roleMiddleware(receiptRoles), receiptController.getReceiptById);
 
 module.exports = router;

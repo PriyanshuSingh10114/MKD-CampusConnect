@@ -1,21 +1,77 @@
-const { Payment } = require('../../models');
+const { Payment, Admission } = require('../../models');
 
-const generateReceipt = async (req, res, next) => {
+const getReceipts = async (req, res, next) => {
   try {
-    const { installmentId } = req.params;
+    const { search, startDate, endDate, page = 1, limit = 50 } = req.query;
+
+    let query = {};
     
-    // Simplified logic: finding payment that matches the installment
-    // Assuming installmentId is actually the receiptNumber for this simplified mock
-    const payment = await Payment.findOne({ receiptNumber: installmentId }).populate('student');
+    if (search) {
+      query.$or = [
+        { receiptNumber: { $regex: search, $options: 'i' } },
+        { admissionNumber: { $regex: search, $options: 'i' } }
+      ];
+      // Note: Searching by student name requires a lookup or populate, which complicates simple find.
+      // For full support, an aggregation could be used here.
+    }
 
-    if (!payment) return res.status(404).json({ success: false, message: 'Receipt not found' });
+    if (startDate || endDate) {
+      query.paymentDate = {};
+      if (startDate) query.paymentDate.$gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        query.paymentDate.$lte = end;
+      }
+    }
 
-    const mockPdfUrl = `https://s3.aws.com/college-erp/receipts/${payment.receiptNumber}.pdf`;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    res.status(200).json({ success: true, data: { ...payment.toObject(), pdfUrl: mockPdfUrl } });
+    const receipts = await Payment.find(query)
+      .populate('student', 'personalDetails.studentName')
+      .populate('collectedBy', 'name')
+      .sort({ paymentDate: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+      
+    const total = await Payment.countDocuments(query);
+
+    res.status(200).json({ 
+      success: true, 
+      data: receipts,
+      pagination: {
+        total,
+        page: parseInt(page),
+        pages: Math.ceil(total / parseInt(limit))
+      }
+    });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { generateReceipt };
+const getReceiptById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const receipt = await Payment.findById(id)
+      .populate('student')
+      .populate('collectedBy', 'name');
+
+    if (!receipt) return res.status(404).json({ success: false, message: 'Receipt not found' });
+
+    // Also get the course from Admission
+    const admission = await Admission.findOne({ student: receipt.student._id });
+
+    res.status(200).json({ 
+      success: true, 
+      data: {
+        ...receipt.toObject(),
+        course: admission?.course || 'Unknown Course'
+      } 
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getReceipts, getReceiptById };

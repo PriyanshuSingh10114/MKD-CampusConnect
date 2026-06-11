@@ -193,7 +193,82 @@ const getReceiptById = async (req, res, next) => {
 
 const getDefaulters = async (req, res, next) => {
   try {
-    const defaulters = await Payment.find({ dueAmount: { $gt: 0 } }).populate('student');
+    const { search, course, session, sort } = req.query;
+    
+    let matchStage = { status: 'Active' };
+    if (search) {
+      matchStage.$or = [
+        { admissionNumber: { $regex: search, $options: 'i' } },
+        { 'personalDetails.studentName': { $regex: search, $options: 'i' } },
+        { 'personalDetails.mobile': { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const pipeline = [
+      { $match: matchStage },
+      {
+        $lookup: {
+          from: 'admissions',
+          localField: '_id',
+          foreignField: 'student',
+          as: 'admissions'
+        }
+      },
+      { $unwind: { path: '$admissions', preserveNullAndEmptyArrays: true } },
+      ...(course ? [{ $match: { 'admissions.course': course } }] : []),
+      ...(session ? [{ $match: { 'admissions.session': session } }] : []),
+      {
+        $lookup: {
+          from: 'feestructures',
+          let: { course: '$admissions.course', session: '$admissions.session' },
+          pipeline: [
+            { $match: { $expr: { $and: [ { $eq: ['$course', '$$course'] }, { $eq: ['$academicYear', '$$session'] } ] } } }
+          ],
+          as: 'feeStructure'
+        }
+      },
+      { $unwind: { path: '$feeStructure', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'payments',
+          localField: '_id',
+          foreignField: 'student',
+          as: 'payments'
+        }
+      },
+      {
+        $addFields: {
+          totalFee: { $ifNull: ['$feeStructure.totalFee', 0] },
+          paidFee: { $sum: '$payments.amountPaid' },
+          lastPaymentDate: { $max: '$payments.paymentDate' }
+        }
+      },
+      {
+        $addFields: {
+          pendingFee: { $subtract: ['$totalFee', '$paidFee'] }
+        }
+      },
+      { $match: { pendingFee: { $gt: 0 } } },
+      { $sort: sort === 'lowest' ? { pendingFee: 1 } : sort === 'recent' ? { 'admissions.createdAt': -1 } : { pendingFee: -1 } },
+      {
+        $project: {
+          studentId: '$_id',
+          admissionNumber: 1,
+          studentName: '$personalDetails.studentName',
+          course: '$admissions.course',
+          session: '$admissions.session',
+          mobile: '$personalDetails.mobile',
+          totalFee: 1,
+          paidFee: 1,
+          pendingFee: 1,
+          lastPaymentDate: 1,
+          status: 1
+        }
+      }
+    ];
+
+    const defaulters = await Student.aggregate(pipeline);
+
     res.status(200).json({ success: true, data: defaulters });
   } catch (error) {
     next(error);

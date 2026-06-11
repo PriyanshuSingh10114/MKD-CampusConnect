@@ -11,6 +11,7 @@ import Reports from './pages/Reports';
 import AddAdmission from './pages/AddAdmission';
 import FeeStructure from './pages/FeeStructure';
 import Receipts from './pages/Receipts';
+import ReceiptPrint from './pages/ReceiptPrint';
 import UserManagement from './pages/UserManagement';
 import Settings from './pages/Settings';
 
@@ -30,6 +31,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/receipt-print/:id" element={<ProtectedRoute><ReceiptPrint /></ProtectedRoute>} />
           <Route path="/" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
