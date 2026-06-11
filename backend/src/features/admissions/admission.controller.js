@@ -24,9 +24,13 @@ const updateAdmissionStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
+    // Find the admission and update its session/course if needed, or update the student status
+    const admission = await Admission.findById(id).populate('student');
+    if (!admission) return res.status(404).json({ success: false, message: 'Admission not found' });
     
-    // In MongoDB we update the student's status or admission status if we added one.
-    // The prompt says "Generate complete working code". We'll just return success for now.
+    if (admission.student) {
+      await Student.findByIdAndUpdate(admission.student._id, { status });
+    }
     
     res.status(200).json({ success: true, message: 'Status updated' });
   } catch (error) {

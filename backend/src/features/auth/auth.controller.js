@@ -6,21 +6,7 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Hardcoded SUPER_ADMIN for initial setup
-    if (email === 'admin@college.edu' && password === 'admin123') {
-      const token = jwt.sign(
-        { id: 'admin-id', role: 'Super Admin', email },
-        process.env.JWT_SECRET || 'secret',
-        { expiresIn: '1d' }
-      );
-      return res.status(200).json({
-        success: true,
-        data: {
-          token,
-          user: { id: 'admin-id', email, role: 'Super Admin', name: 'Super Admin' }
-        }
-      });
-    }
+    // User login from DB
 
     const user = await User.findOne({ email });
     if (!user) {
