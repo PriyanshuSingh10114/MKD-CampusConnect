@@ -18,11 +18,14 @@ const studentSchema = new mongoose.Schema({
     gender: String,
     dob: Date,
     mobile: String,
+    alternateMobile: String,
     email: String,
-    aadhaarNumber: String
+    aadhaarNumber: String,
+    category: String
   },
   addressDetails: {
     address: String,
+    correspondenceAddress: String,
     city: String,
     district: String,
     state: String,
@@ -53,27 +56,36 @@ const admissionSchema = new mongoose.Schema({
 const Admission = mongoose.model('Admission', admissionSchema);
 
 const feeStructureSchema = new mongoose.Schema({
-  course: { type: String, enum: ['B.Ed', 'BTC / D.El.Ed', 'ITI'] },
-  admissionFee: Number,
-  tuitionFee: Number,
-  examFee: Number,
-  libraryFee: Number,
-  developmentFee: Number,
-  totalFee: Number
+  course: { type: String, enum: ['B.Ed', 'BTC / D.El.Ed', 'ITI'], required: true },
+  academicYear: { type: String, required: true }, // e.g. "2026-2027"
+  admissionFee: { type: Number, default: 0 },
+  tuitionFee: { type: Number, default: 0 },
+  examFee: { type: Number, default: 0 },
+  libraryFee: { type: Number, default: 0 },
+  developmentFee: { type: Number, default: 0 },
+  workshopFee: { type: Number, default: 0 },
+  labFee: { type: Number, default: 0 },
+  otherFee: { type: Number, default: 0 },
+  totalFee: { type: Number, default: 0 }
 }, { timestamps: true });
+
+feeStructureSchema.index({ course: 1, academicYear: 1 }, { unique: true });
 
 const FeeStructure = mongoose.model('FeeStructure', feeStructureSchema);
 
 const paymentSchema = new mongoose.Schema({
   student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+  admissionNumber: String,
   receiptNumber: { type: String, unique: true },
   paymentDate: Date,
-  paymentMode: { type: String, enum: ['Cash', 'UPI', 'Bank Transfer', 'Cheque'] },
+  paymentMode: { type: String, enum: ['Cash', 'UPI', 'Bank Transfer', 'Cheque', 'Demand Draft'] },
+  transactionId: String,
   amountPaid: Number,
   totalFee: Number,
   dueAmount: Number,
   installmentNumber: Number,
-  remarks: String
+  remarks: String,
+  collectedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
 const Payment = mongoose.model('Payment', paymentSchema);

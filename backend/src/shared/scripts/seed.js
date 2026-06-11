@@ -38,15 +38,15 @@ const seedData = async () => {
 
     console.log('Creating Fee Structures...');
     const feeStructures = await FeeStructure.insertMany([
-      { course: 'B.Ed', admissionFee: 5000, tuitionFee: 40000, examFee: 2000, libraryFee: 1000, developmentFee: 2000, totalFee: 50000 },
-      { course: 'BTC / D.El.Ed', admissionFee: 4000, tuitionFee: 35000, examFee: 2000, libraryFee: 1000, developmentFee: 2000, totalFee: 44000 },
-      { course: 'ITI', admissionFee: 3000, tuitionFee: 20000, examFee: 1500, libraryFee: 500, developmentFee: 1000, totalFee: 26000 }
+      { course: 'B.Ed', academicYear: '2026-2027', admissionFee: 5000, tuitionFee: 40000, examFee: 2000, libraryFee: 1000, developmentFee: 2000, totalFee: 50000 },
+      { course: 'BTC / D.El.Ed', academicYear: '2026-2027', admissionFee: 4000, tuitionFee: 35000, examFee: 2000, libraryFee: 1000, developmentFee: 2000, totalFee: 44000 },
+      { course: 'ITI', academicYear: '2026-2027', admissionFee: 3000, tuitionFee: 20000, examFee: 1500, libraryFee: 500, developmentFee: 1000, totalFee: 26000 }
     ]);
 
     console.log('Creating Dummy Students & Admissions...');
     const student1 = await Student.create({
       admissionNumber: 'MKD-2026-0001',
-      personalDetails: { studentName: 'John Doe', gender: 'Male', email: 'john@example.com' },
+      personalDetails: { studentName: 'John Doe', gender: 'Male', email: 'john@example.com', mobile: '9876543210' },
       status: 'Active'
     });
     
@@ -59,7 +59,7 @@ const seedData = async () => {
 
     const student2 = await Student.create({
       admissionNumber: 'MKD-2026-0002',
-      personalDetails: { studentName: 'Jane Smith', gender: 'Female', email: 'jane@example.com' },
+      personalDetails: { studentName: 'Jane Smith', gender: 'Female', email: 'jane@example.com', mobile: '9123456789' },
       status: 'Active'
     });
 
@@ -73,14 +73,16 @@ const seedData = async () => {
     console.log('Creating Dummy Payments...');
     await Payment.create({
       student: student1._id,
-      receiptNumber: 'REC-1001',
+      admissionNumber: student1.admissionNumber,
+      receiptNumber: 'RCP-2026-00001',
       paymentDate: new Date(),
       paymentMode: 'UPI',
       amountPaid: 10000,
       totalFee: 50000,
       dueAmount: 40000,
       installmentNumber: 1,
-      remarks: 'First installment'
+      remarks: 'First installment',
+      collectedBy: adminUser._id
     });
 
     console.log('Database Seeded Successfully!');
