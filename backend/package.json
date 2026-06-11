@@ -24,7 +24,6 @@
     "mongoose": "^9.7.0",
     "multer": "^2.1.1",
     "pdfkit": "^0.19.0",
-    "xss-clean": "^0.1.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {
