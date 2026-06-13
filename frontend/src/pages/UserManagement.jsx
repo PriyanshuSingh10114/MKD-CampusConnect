@@ -16,7 +16,7 @@ export default function UserManagement() {
   const [resettingPasswordUser, setResettingPasswordUser] = useState(null);
 
   // Form states
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'Admission Operator', status: 'Active' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'Admission Staff', status: 'Active' });
   const [newPassword, setNewPassword] = useState('');
 
   const { data: users, isLoading } = useQuery({
@@ -33,7 +33,7 @@ export default function UserManagement() {
       queryClient.invalidateQueries(['users']);
       toast({ title: 'User created successfully' });
       setIsAdding(false);
-      setFormData({ name: '', email: '', password: '', role: 'Admission Operator', status: 'Active' });
+      setFormData({ name: '', email: '', password: '', role: 'Admission Staff', status: 'Active' });
     },
     onError: (err) => toast({ title: 'Error', description: err.response?.data?.message || 'Failed to create user', variant: 'destructive' })
   });
@@ -117,8 +117,8 @@ export default function UserManagement() {
               >
                 <option value="Super Admin">Super Admin</option>
                 <option value="Principal">Principal</option>
-                <option value="Admission Operator">Admission Operator</option>
-                <option value="Accounts Operator">Accounts Operator</option>
+                <option value="Admission Staff">Admission Staff</option>
+                <option value="Accounts Staff">Accounts Staff</option>
               </select>
               <div className="flex space-x-2">
                 <Button type="submit" disabled={createUserMutation.isPending}>Save User</Button>
@@ -142,8 +142,8 @@ export default function UserManagement() {
               >
                 <option value="Super Admin">Super Admin</option>
                 <option value="Principal">Principal</option>
-                <option value="Admission Operator">Admission Operator</option>
-                <option value="Accounts Operator">Accounts Operator</option>
+                <option value="Admission Staff">Admission Staff</option>
+                <option value="Accounts Staff">Accounts Staff</option>
               </select>
               <div className="flex space-x-2">
                 <Button type="submit" disabled={updateUserMutation.isPending}>Update</Button>

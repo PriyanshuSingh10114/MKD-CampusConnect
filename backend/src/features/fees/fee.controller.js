@@ -1,4 +1,4 @@
-const { FeeStructure, Payment, Student, Admission } = require('../../models');
+const { FeeStructure, Payment, Student, Admission, Settings } = require('../../models');
 
 const asyncHandler = require('../../shared/middlewares/async.middleware');
 
@@ -139,9 +139,30 @@ const collectFee = asyncHandler(async (req, res) => {
   const newTotalPaid = totalPaidSoFar + Number(amountPaid);
   const newDue = totalFee - newTotalPaid;
 
-  const paymentCount = await Payment.countDocuments();
-  const nextNum = (paymentCount + 1).toString().padStart(5, '0');
-  const receiptNumber = `RCP-${new Date().getFullYear()}-${nextNum}`;
+  let prefix = 'RCP-';
+  const settings = await Settings.findOne();
+  if (settings && settings.receipt && settings.receipt.prefix) {
+    prefix = settings.receipt.prefix;
+  }
+
+  const currentYear = new Date().getFullYear();
+  const fullPrefix = `${prefix}${currentYear}-`;
+
+  const lastPayment = await Payment.findOne({ receiptNumber: new RegExp(`^${fullPrefix}`) }).sort({ createdAt: -1 });
+  
+  let nextNum = 1;
+  if (lastPayment && lastPayment.receiptNumber) {
+    const parts = lastPayment.receiptNumber.split('-');
+    const lastPart = parts[parts.length - 1];
+    if (!isNaN(lastPart)) {
+      nextNum = parseInt(lastPart, 10) + 1;
+    } else {
+      nextNum = (await Payment.countDocuments()) + 1;
+    }
+  }
+
+  const formattedNum = nextNum.toString().padStart(5, '0');
+  const receiptNumber = `${fullPrefix}${formattedNum}`;
 
   const payment = new Payment({
     student: studentId,

@@ -1,12 +1,22 @@
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { Edit2, Save, X } from 'lucide-react';
 import api from '@/lib/api';
 
 export default function StudentProfile() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({ personalDetails: {}, addressDetails: {} });
 
   const { data: profileData, isLoading } = useQuery({
     queryKey: ['studentProfile', id],
@@ -18,6 +28,18 @@ export default function StudentProfile() {
     enabled: !!id
   });
 
+  const updateProfileMutation = useMutation({
+    mutationFn: (data) => api.put(`/students/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['studentProfile', id]);
+      toast({ title: 'Profile Updated', description: 'Student details saved successfully.' });
+      setIsEditing(false);
+    },
+    onError: (err) => {
+      toast({ title: 'Update Failed', description: err.response?.data?.message || 'Could not update profile.', variant: 'destructive' });
+    }
+  });
+
   if (!id) return <div className="p-8 text-center text-muted-foreground">Select a student from the Admissions List first.</div>;
   if (isLoading) return <div className="p-8 text-center">Loading Profile...</div>;
   if (!profileData || !profileData.student) return <div className="p-8 text-center text-red-500">Student not found.</div>;
@@ -26,9 +48,31 @@ export default function StudentProfile() {
   const initials = student.personalDetails?.studentName?.slice(0, 2).toUpperCase() || 'ST';
   const admission = student.admissions?.[0] || {};
 
+  const handleEditClick = () => {
+    setEditForm({
+      personalDetails: { ...student.personalDetails },
+      addressDetails: { ...student.addressDetails }
+    });
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    updateProfileMutation.mutate(editForm);
+  };
+
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Student Profile</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Student Profile</h2>
+        {!isEditing ? (
+          <Button onClick={handleEditClick} variant="outline"><Edit2 className="w-4 h-4 mr-2" /> Edit Profile</Button>
+        ) : (
+          <div className="flex space-x-2">
+            <Button onClick={handleSave} disabled={updateProfileMutation.isPending}><Save className="w-4 h-4 mr-2" /> Save Changes</Button>
+            <Button onClick={() => setIsEditing(false)} variant="ghost"><X className="w-4 h-4 mr-2" /> Cancel</Button>
+          </div>
+        )}
+      </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         {/* Profile Card */}
@@ -60,15 +104,27 @@ export default function StudentProfile() {
               <CardTitle>Personal Details</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div><span className="text-muted-foreground block">Father's Name</span><span className="font-semibold">{student.personalDetails?.fatherName || '-'}</span></div>
-                <div><span className="text-muted-foreground block">Mother's Name</span><span className="font-semibold">{student.personalDetails?.motherName || '-'}</span></div>
-                <div><span className="text-muted-foreground block">Gender</span><span className="font-semibold">{student.personalDetails?.gender || '-'}</span></div>
-                <div><span className="text-muted-foreground block">Date of Birth</span><span className="font-semibold">{student.personalDetails?.dob ? new Date(student.personalDetails.dob).toLocaleDateString() : '-'}</span></div>
-                <div><span className="text-muted-foreground block">Aadhaar Number</span><span className="font-semibold">{student.personalDetails?.aadhaarNumber || '-'}</span></div>
-                <div><span className="text-muted-foreground block">Category</span><span className="font-semibold">{student.personalDetails?.category || '-'}</span></div>
-                <div><span className="text-muted-foreground block">Alternate Mobile</span><span className="font-semibold">{student.personalDetails?.alternateMobile || '-'}</span></div>
-              </div>
+              {isEditing ? (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Student Name</span><Input value={editForm.personalDetails.studentName || ''} onChange={e => setEditForm({ ...editForm, personalDetails: { ...editForm.personalDetails, studentName: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Father's Name</span><Input value={editForm.personalDetails.fatherName || ''} onChange={e => setEditForm({ ...editForm, personalDetails: { ...editForm.personalDetails, fatherName: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Mother's Name</span><Input value={editForm.personalDetails.motherName || ''} onChange={e => setEditForm({ ...editForm, personalDetails: { ...editForm.personalDetails, motherName: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Mobile</span><Input value={editForm.personalDetails.mobile || ''} onChange={e => setEditForm({ ...editForm, personalDetails: { ...editForm.personalDetails, mobile: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Email</span><Input value={editForm.personalDetails.email || ''} onChange={e => setEditForm({ ...editForm, personalDetails: { ...editForm.personalDetails, email: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Aadhaar Number</span><Input value={editForm.personalDetails.aadhaarNumber || ''} onChange={e => setEditForm({ ...editForm, personalDetails: { ...editForm.personalDetails, aadhaarNumber: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Alternate Mobile</span><Input value={editForm.personalDetails.alternateMobile || ''} onChange={e => setEditForm({ ...editForm, personalDetails: { ...editForm.personalDetails, alternateMobile: e.target.value } })} /></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div><span className="text-muted-foreground block">Father's Name</span><span className="font-semibold">{student.personalDetails?.fatherName || '-'}</span></div>
+                  <div><span className="text-muted-foreground block">Mother's Name</span><span className="font-semibold">{student.personalDetails?.motherName || '-'}</span></div>
+                  <div><span className="text-muted-foreground block">Gender</span><span className="font-semibold">{student.personalDetails?.gender || '-'}</span></div>
+                  <div><span className="text-muted-foreground block">Date of Birth</span><span className="font-semibold">{student.personalDetails?.dob ? new Date(student.personalDetails.dob).toLocaleDateString() : '-'}</span></div>
+                  <div><span className="text-muted-foreground block">Aadhaar Number</span><span className="font-semibold">{student.personalDetails?.aadhaarNumber || '-'}</span></div>
+                  <div><span className="text-muted-foreground block">Category</span><span className="font-semibold">{student.personalDetails?.category || '-'}</span></div>
+                  <div><span className="text-muted-foreground block">Alternate Mobile</span><span className="font-semibold">{student.personalDetails?.alternateMobile || '-'}</span></div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -77,10 +133,21 @@ export default function StudentProfile() {
               <CardTitle>Address Details</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="col-span-2"><span className="text-muted-foreground block">Permanent Address</span><span className="font-semibold">{student.addressDetails?.address}, {student.addressDetails?.city}, {student.addressDetails?.district}, {student.addressDetails?.state} - {student.addressDetails?.pincode}</span></div>
-                <div className="col-span-2"><span className="text-muted-foreground block">Correspondence Address</span><span className="font-semibold">{student.addressDetails?.correspondenceAddress || 'Same as Permanent'}</span></div>
-              </div>
+              {isEditing ? (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2 space-y-1"><span className="text-xs text-muted-foreground">Address</span><Input value={editForm.addressDetails.address || ''} onChange={e => setEditForm({ ...editForm, addressDetails: { ...editForm.addressDetails, address: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">City</span><Input value={editForm.addressDetails.city || ''} onChange={e => setEditForm({ ...editForm, addressDetails: { ...editForm.addressDetails, city: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">District</span><Input value={editForm.addressDetails.district || ''} onChange={e => setEditForm({ ...editForm, addressDetails: { ...editForm.addressDetails, district: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">State</span><Input value={editForm.addressDetails.state || ''} onChange={e => setEditForm({ ...editForm, addressDetails: { ...editForm.addressDetails, state: e.target.value } })} /></div>
+                  <div className="space-y-1"><span className="text-xs text-muted-foreground">Pincode</span><Input value={editForm.addressDetails.pincode || ''} onChange={e => setEditForm({ ...editForm, addressDetails: { ...editForm.addressDetails, pincode: e.target.value } })} /></div>
+                  <div className="col-span-2 space-y-1"><span className="text-xs text-muted-foreground">Correspondence Address</span><Input value={editForm.addressDetails.correspondenceAddress || ''} onChange={e => setEditForm({ ...editForm, addressDetails: { ...editForm.addressDetails, correspondenceAddress: e.target.value } })} /></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="col-span-2"><span className="text-muted-foreground block">Permanent Address</span><span className="font-semibold">{student.addressDetails?.address}, {student.addressDetails?.city}, {student.addressDetails?.district}, {student.addressDetails?.state} - {student.addressDetails?.pincode}</span></div>
+                  <div className="col-span-2"><span className="text-muted-foreground block">Correspondence Address</span><span className="font-semibold">{student.addressDetails?.correspondenceAddress || 'Same as Permanent'}</span></div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
