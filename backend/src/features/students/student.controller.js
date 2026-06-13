@@ -72,4 +72,22 @@ const createStudent = asyncHandler(async (req, res) => {
     res.status(201).json({ success: true, data: student });
 });
 
-module.exports = { getStudents, getStudentById, createStudent };
+const updateStudent = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { personalDetails, addressDetails, academicDetails } = req.body;
+
+    const student = await Student.findById(id);
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student not found' });
+    }
+
+    if (personalDetails) student.personalDetails = { ...student.personalDetails, ...personalDetails };
+    if (addressDetails) student.addressDetails = { ...student.addressDetails, ...addressDetails };
+    if (academicDetails) student.academicDetails = { ...student.academicDetails, ...academicDetails };
+
+    await student.save();
+
+    res.status(200).json({ success: true, data: student, message: 'Student profile updated successfully' });
+});
+
+module.exports = { getStudents, getStudentById, createStudent, updateStudent };

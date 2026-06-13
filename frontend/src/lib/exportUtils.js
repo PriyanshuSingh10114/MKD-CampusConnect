@@ -1,5 +1,5 @@
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 
 export const exportToPDF = (title, columns, data, filename) => {
@@ -11,7 +11,7 @@ export const exportToPDF = (title, columns, data, filename) => {
   doc.setTextColor(100);
   doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: 36,
     head: [columns],
     body: data,

@@ -195,20 +195,20 @@ function DefaultersReport() {
   const handleExportPDF = () => {
     if (!data) return;
     const columns = ['Student', 'Admission No', 'Course', 'Pending Fee (INR)'];
-    const rows = data.map(d => [d.personalDetails?.studentName || 'N/A', d.admissionNumber, d.admissions?.course || 'N/A', `Rs. ${d.pendingFee.toLocaleString()}`]);
+    const rows = data.map(d => [d.studentName || 'N/A', d.admissionNumber, d.course || 'N/A', `Rs. ${d.pendingFee.toLocaleString()}`]);
     exportToPDF('Defaulter Report', columns, rows, 'defaulter_report');
   };
 
   const handleExportExcel = () => {
     if (!data) return;
-    const excelData = data.map(d => ({ Student: d.personalDetails?.studentName || 'N/A', 'Admission No': d.admissionNumber, Course: d.admissions?.course || 'N/A', 'Pending Fee': d.pendingFee }));
+    const excelData = data.map(d => ({ Student: d.studentName || 'N/A', 'Admission No': d.admissionNumber, Course: d.course || 'N/A', 'Pending Fee': d.pendingFee }));
     exportToExcel(excelData, 'defaulter_report');
   };
 
   const handlePrint = () => {
     if (!data) return;
     const columns = ['Student', 'Admission No', 'Course', 'Pending Fee (INR)'];
-    const rows = data.map(d => [d.personalDetails?.studentName || 'N/A', d.admissionNumber, d.admissions?.course || 'N/A', `Rs. ${d.pendingFee.toLocaleString()}`]);
+    const rows = data.map(d => [d.studentName || 'N/A', d.admissionNumber, d.course || 'N/A', `Rs. ${d.pendingFee.toLocaleString()}`]);
     printReport('Defaulter Report', columns, rows);
   };
 
@@ -237,9 +237,9 @@ function DefaultersReport() {
           <tbody>
             {data?.map((item, i) => (
               <tr key={i} className="border-b">
-                <td className="px-4 py-3 font-medium">{item.personalDetails?.studentName}</td>
+                <td className="px-4 py-3 font-medium">{item.studentName || 'N/A'}</td>
                 <td className="px-4 py-3">{item.admissionNumber}</td>
-                <td className="px-4 py-3"><Badge variant="outline">{item.admissions?.course || 'N/A'}</Badge></td>
+                <td className="px-4 py-3"><Badge variant="outline">{item.course || 'N/A'}</Badge></td>
                 <td className="px-4 py-3 text-red-600 font-bold">₹{item.pendingFee?.toLocaleString()}</td>
               </tr>
             ))}

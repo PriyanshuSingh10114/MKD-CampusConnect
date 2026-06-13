@@ -8,5 +8,6 @@ router.use(authMiddleware);
 router.get('/', studentController.getStudents);
 router.get('/:id', studentController.getStudentById);
 router.post('/', roleMiddleware(['Super Admin', 'Principal', 'Admission Staff']), studentController.createStudent);
+router.put('/:id', roleMiddleware(['Super Admin', 'Principal', 'Admission Staff']), studentController.updateStudent);
 
 module.exports = router;

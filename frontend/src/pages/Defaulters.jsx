@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Download, Bell, Search, Filter } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import api from '@/lib/api';
+import { exportToPDF } from '@/lib/exportUtils';
 
 export default function Defaulters() {
   const { toast } = useToast();
@@ -41,12 +42,28 @@ export default function Defaulters() {
     toast({ title: 'Reminder Sent', description: 'SMS and Email sent to defaulters.' });
   };
 
+  const handleExportPDF = () => {
+    if (!defaulters || defaulters.length === 0) {
+      toast({ title: 'No data', description: 'No defaulters to export.', variant: 'destructive' });
+      return;
+    }
+    const columns = ['Student', 'Admission No', 'Course', 'Mobile', 'Pending Fee (INR)'];
+    const rows = defaulters.map(d => [
+      d.studentName || 'N/A', 
+      d.admissionNumber, 
+      d.course || 'N/A', 
+      d.mobile || 'N/A',
+      `Rs. ${d.pendingFee.toLocaleString()}`
+    ]);
+    exportToPDF('Defaulter Report', columns, rows, 'defaulter_report_main');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Defaulter Management</h2>
         <div className="flex space-x-2">
-          <Button variant="outline"><Download className="w-4 h-4 mr-2" /> Export PDF</Button>
+          <Button variant="outline" onClick={handleExportPDF}><Download className="w-4 h-4 mr-2" /> Export PDF</Button>
           <Button onClick={handleSendReminder} className="bg-primary hover:bg-primary/90 text-white shadow-sm border-0"><Bell className="w-4 h-4 mr-2" /> Send Reminders</Button>
         </div>
       </div>
