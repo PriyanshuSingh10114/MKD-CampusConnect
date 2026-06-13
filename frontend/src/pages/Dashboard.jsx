@@ -61,15 +61,20 @@ export default function Dashboard() {
 
   const {
     totalStudents = 0,
+    totalAdmissions = 0,
     newAdmissions = 0,
     totalRevenue = 0,
+    todaysCollection = 0,
+    thisMonthsCollection = 0,
     pendingFees = 0,
     defaultersCount = 0,
     monthlyRevenue = [],
     admissionsByCourse = [],
     feeCollectionMode = [],
+    courseRevenue = [],
     recentAdmissions = [],
-    recentPayments = []
+    recentPayments = [],
+    topDefaulters = []
   } = data || {};
 
   // Construct Activity Timeline
@@ -112,10 +117,18 @@ export default function Dashboard() {
 
         <Card className="bg-white dark:bg-layout-card-dark border-slate-200 dark:border-slate-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">This Month's Admissions</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-500">Total Admissions</CardTitle>
             <div className="p-2 bg-indigo-50 rounded-full"><GraduationCap className="h-4 w-4 text-indigo-600" /></div>
           </CardHeader>
-          <CardContent><div className="text-2xl font-bold">{newAdmissions}</div></CardContent>
+          <CardContent><div className="text-2xl font-bold">{totalAdmissions}</div></CardContent>
+        </Card>
+
+        <Card className="bg-white dark:bg-layout-card-dark border-slate-200 dark:border-slate-800 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-slate-500">Today's Collection</CardTitle>
+            <div className="p-2 bg-emerald-50 rounded-full"><IndianRupee className="h-4 w-4 text-emerald-600" /></div>
+          </CardHeader>
+          <CardContent><div className="text-2xl font-bold text-emerald-600">₹{todaysCollection.toLocaleString()}</div></CardContent>
         </Card>
 
         <Card className="bg-white dark:bg-layout-card-dark border-slate-200 dark:border-slate-800 shadow-sm">
@@ -344,6 +357,45 @@ export default function Dashboard() {
                   ))}
                   {recentPayments.length === 0 && (
                     <tr><td colSpan="3" className="px-4 py-8 text-center text-slate-500">No recent payments.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Row 5: Top Defaulters */}
+      <div className="grid gap-4 mt-6">
+        <Card className="shadow-sm border-slate-200 overflow-hidden">
+          <CardHeader className="bg-red-50 border-b border-red-100 py-3">
+            <CardTitle className="text-sm font-semibold text-red-700">Top Defaulters</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-slate-500 bg-white border-b">
+                  <tr>
+                    <th className="px-4 py-3 font-medium">Student</th>
+                    <th className="px-4 py-3 font-medium">Course</th>
+                    <th className="px-4 py-3 font-medium">Pending Fee</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topDefaulters.map((def, i) => (
+                    <tr key={def._id} className={i !== topDefaulters.length - 1 ? "border-b border-slate-100" : ""}>
+                      <td className="px-4 py-3">
+                        <p className="font-medium text-slate-900">{def.studentName}</p>
+                        <p className="text-xs text-slate-500">{def.admissionNumber}</p>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge variant="secondary" className="bg-slate-100 text-slate-700">{def.course}</Badge>
+                      </td>
+                      <td className="px-4 py-3 font-medium text-red-600">₹{def.pendingFee?.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                  {topDefaulters.length === 0 && (
+                    <tr><td colSpan="3" className="px-4 py-8 text-center text-slate-500">No defaulters found.</td></tr>
                   )}
                 </tbody>
               </table>

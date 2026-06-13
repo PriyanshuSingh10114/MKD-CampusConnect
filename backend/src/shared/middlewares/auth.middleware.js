@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-const authMiddleware = (req, res, next) => {
+const { User } = require('../../models');
+
+const authMiddleware = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   
   if (!token) {
@@ -9,7 +11,17 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    req.user = decoded;
+    
+    // Fetch user from DB to ensure they still exist and are Active
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'User no longer exists' });
+    }
+    if (user.status === 'Inactive') {
+      return res.status(403).json({ success: false, message: 'Your account has been deactivated' });
+    }
+
+    req.user = user;
     next();
   } catch (error) {
     return res.status(401).json({ success: false, message: 'Invalid or expired token' });

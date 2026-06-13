@@ -2,8 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { User } = require('../../models');
 
-const login = async (req, res, next) => {
-  try {
+const asyncHandler = require('../../shared/middlewares/async.middleware');
+
+const login = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     // User login from DB
@@ -31,17 +32,14 @@ const login = async (req, res, next) => {
         user: { id: user._id, email: user.email, role: user.role, name: user.name }
       }
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-const forgotPassword = async (req, res, next) => {
+const forgotPassword = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: 'Password reset link sent' });
-};
+});
 
-const resetPassword = async (req, res, next) => {
+const resetPassword = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: 'Password reset successfully' });
-};
+});
 
 module.exports = { login, forgotPassword, resetPassword };

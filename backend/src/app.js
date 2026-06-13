@@ -63,6 +63,8 @@ const receiptRoutes = require('./features/receipts/receipt.routes');
 const reportRoutes = require('./features/reports/report.routes');
 const logRoutes = require('./features/logs/log.routes');
 const dashboardRoutes = require('./features/dashboard/dashboard.routes');
+const userRoutes = require('./features/users/user.routes');
+const settingsRoutes = require('./features/settings/settings.routes');
 
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -80,6 +82,8 @@ app.use('/api/receipts', receiptRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/logs', logRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/settings', settingsRoutes);
 
 /*
 |--------------------------------------------------------------------------

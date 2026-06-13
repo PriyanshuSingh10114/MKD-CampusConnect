@@ -1,7 +1,8 @@
 const { Student, Admission, Payment, FeeStructure } = require('../../models');
 
-const getStudents = async (req, res, next) => {
-  try {
+const asyncHandler = require('../../shared/middlewares/async.middleware');
+
+const getStudents = asyncHandler(async (req, res) => {
     const { search } = req.query;
     let query = {};
     if (search) {
@@ -15,13 +16,9 @@ const getStudents = async (req, res, next) => {
     }
     const students = await Student.find(query).limit(20);
     res.status(200).json({ success: true, data: students });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-const getStudentById = async (req, res, next) => {
-  try {
+const getStudentById = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const student = await Student.findById(id).lean();
     if (!student) {
@@ -36,8 +33,8 @@ const getStudentById = async (req, res, next) => {
     
     if (admissions.length > 0) {
       const activeAdmission = admissions[0];
-      // Try to find fee structure for this course
-      const feeStructure = await FeeStructure.findOne({ course: activeAdmission.course });
+      // Try to find fee structure for this course and session
+      const feeStructure = await FeeStructure.findOne({ course: activeAdmission.course, academicYear: activeAdmission.session });
       if (feeStructure) {
         feeSummary.totalFee = feeStructure.totalFee;
       }
@@ -57,13 +54,9 @@ const getStudentById = async (req, res, next) => {
         recentPayments 
       } 
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-const createStudent = async (req, res, next) => {
-  try {
+const createStudent = asyncHandler(async (req, res) => {
     const data = req.body;
     
     // Auto-generate admission number if not provided
@@ -77,9 +70,6 @@ const createStudent = async (req, res, next) => {
     await student.save();
 
     res.status(201).json({ success: true, data: student });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 module.exports = { getStudents, getStudentById, createStudent };

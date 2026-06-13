@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, enum: ['Super Admin', 'Principal', 'Admission Staff', 'Accounts Staff'] },
+  status: { type: String, enum: ['Active', 'Inactive'], default: 'Active' },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
@@ -39,6 +40,8 @@ const studentSchema = new mongoose.Schema({
   status: { type: String, default: 'Active' }
 }, { timestamps: true });
 
+studentSchema.index({ 'personalDetails.studentName': 1 });
+
 const Student = mongoose.model('Student', studentSchema);
 
 const admissionSchema = new mongoose.Schema({
@@ -52,6 +55,9 @@ const admissionSchema = new mongoose.Schema({
     marksheet: String
   }
 }, { timestamps: true });
+
+admissionSchema.index({ student: 1 });
+admissionSchema.index({ course: 1, session: 1 });
 
 const Admission = mongoose.model('Admission', admissionSchema);
 
@@ -88,6 +94,29 @@ const paymentSchema = new mongoose.Schema({
   collectedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
+paymentSchema.index({ student: 1 });
+paymentSchema.index({ paymentDate: -1 });
+
 const Payment = mongoose.model('Payment', paymentSchema);
 
-module.exports = { User, Student, Admission, FeeStructure, Payment };
+const settingsSchema = new mongoose.Schema({
+  institution: {
+    name: { type: String, default: 'M.K.D. Group of Education' },
+    address: { type: String, default: '' },
+    phone: { type: String, default: '' },
+    email: { type: String, default: '' },
+    logo: { type: String, default: '' }
+  },
+  receipt: {
+    prefix: { type: String, default: 'REC-' },
+    termsAndConditions: { type: String, default: 'Fees once paid will not be refunded.' }
+  },
+  admission: {
+    prefix: { type: String, default: 'MKD-' },
+    currentSession: { type: String, default: '2026-2027' }
+  }
+}, { timestamps: true });
+
+const Settings = mongoose.model('Settings', settingsSchema);
+
+module.exports = { User, Student, Admission, FeeStructure, Payment, Settings };

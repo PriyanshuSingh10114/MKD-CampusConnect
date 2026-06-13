@@ -1,8 +1,9 @@
 const { Payment, Admission, Student, FeeStructure } = require('../../models');
 const mongoose = require('mongoose');
 
-const getDashboardStats = async (req, res, next) => {
-  try {
+const asyncHandler = require('../../shared/middlewares/async.middleware');
+
+const getDashboardStats = asyncHandler(async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -109,13 +110,9 @@ const getDashboardStats = async (req, res, next) => {
         courseRevenue: formattedCourseRevenue
       }
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-const getDailyCollection = async (req, res, next) => {
-  try {
+const getDailyCollection = asyncHandler(async (req, res) => {
     const { date } = req.query;
     let query = {};
     if (date) {
@@ -132,13 +129,9 @@ const getDailyCollection = async (req, res, next) => {
     const totalTransactions = payments.length;
 
     res.status(200).json({ success: true, data: { date: date || new Date().toISOString().split('T')[0], totalTransactions, totalAmount, payments } });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-const getMonthlyCollection = async (req, res, next) => {
-  try {
+const getMonthlyCollection = asyncHandler(async (req, res) => {
     const data = await Payment.aggregate([
       {
         $group: {
@@ -150,13 +143,9 @@ const getMonthlyCollection = async (req, res, next) => {
       { $sort: { '_id.year': -1, '_id.month': -1 } }
     ]);
     res.status(200).json({ success: true, data });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-const getCourseRevenue = async (req, res, next) => {
-  try {
+const getCourseRevenue = asyncHandler(async (req, res) => {
     const data = await Payment.aggregate([
       {
         $lookup: {
@@ -177,13 +166,9 @@ const getCourseRevenue = async (req, res, next) => {
       { $sort: { totalRevenue: -1 } }
     ]);
     res.status(200).json({ success: true, data });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-const getAdmissionsReport = async (req, res, next) => {
-  try {
+const getAdmissionsReport = asyncHandler(async (req, res) => {
     const data = await Admission.aggregate([
       {
         $group: {
@@ -194,13 +179,9 @@ const getAdmissionsReport = async (req, res, next) => {
       { $sort: { '_id.session': -1, '_id.course': 1 } }
     ]);
     res.status(200).json({ success: true, data });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
-const getStudentLedger = async (req, res, next) => {
-  try {
+const getStudentLedger = asyncHandler(async (req, res) => {
     const { studentId } = req.params;
     
     const isObjectId = studentId.match(/^[0-9a-fA-F]{24}$/);
@@ -222,10 +203,7 @@ const getStudentLedger = async (req, res, next) => {
         payments
       }
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 module.exports = { 
   getDashboardStats, 
