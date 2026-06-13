@@ -8,5 +8,6 @@ router.use(authMiddleware);
 // Only Super Admin and Principal can manage settings
 router.get('/', roleMiddleware(['Super Admin', 'Principal']), settingsController.getSettings);
 router.put('/', roleMiddleware(['Super Admin', 'Principal']), settingsController.updateSettings);
+router.get('/backup', roleMiddleware(['Super Admin', 'Principal']), settingsController.getBackup);
 
 module.exports = router;

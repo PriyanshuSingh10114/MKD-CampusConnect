@@ -109,11 +109,16 @@ const settingsSchema = new mongoose.Schema({
   },
   receipt: {
     prefix: { type: String, default: 'REC-' },
-    termsAndConditions: { type: String, default: 'Fees once paid will not be refunded.' }
+    termsAndConditions: { type: String, default: 'Fees once paid will not be refunded.' },
+    paymentModes: { type: [String], default: ['Cash', 'UPI', 'Bank Transfer', 'Cheque', 'Demand Draft'] }
   },
   admission: {
     prefix: { type: String, default: 'MKD-' },
-    currentSession: { type: String, default: '2026-2027' }
+    currentSession: { type: String, default: '2026-2027' },
+    courses: { type: [String], default: ['B.Ed', 'BTC / D.El.Ed', 'ITI'] }
+  },
+  system: {
+    theme: { type: String, default: 'light' }
   }
 }, { timestamps: true });
 

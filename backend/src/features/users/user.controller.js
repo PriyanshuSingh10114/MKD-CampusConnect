@@ -82,4 +82,17 @@ const resetUserPassword = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: 'Password reset successfully' });
 });
 
-module.exports = { getUsers, createUser, updateUser, updateUserStatus, resetUserPassword };
+const deleteUser = asyncHandler(async (req, res) => {
+  if (req.user.id === req.params.id) {
+    return res.status(400).json({ success: false, message: 'You cannot delete yourself' });
+  }
+
+  const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found' });
+  }
+
+  res.status(200).json({ success: true, message: 'User deleted successfully' });
+});
+
+module.exports = { getUsers, createUser, updateUser, updateUserStatus, resetUserPassword, deleteUser };
