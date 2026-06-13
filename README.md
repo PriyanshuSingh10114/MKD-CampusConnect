@@ -102,8 +102,8 @@ A highly scalable RESTful API built to process thousands of queries securely.
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
-   cd college-erp
+   git clone https://github.com/PriyanshuSingh10114/MKD-CampusConnect.git
+   cd MKD-CampusConnect
    ```
 
 2. **Backend Setup:**
