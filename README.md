@@ -138,7 +138,8 @@ A highly scalable RESTful API built to process thousands of queries securely.
    ```
 
 4. **Access the application:**
-   Open your browser and navigate to `http://localhost:5173`.
+   - **Frontend UI**: Open your browser and navigate to `http://localhost:5173`.
+   - **Backend API**: The server listens on `http://localhost:5000`.
 
 ---
 
@@ -154,6 +155,17 @@ The application is fully containerized for zero-friction production deployment.
 3. The application will boot up automatically:
    - **Frontend UI**: `http://localhost:80`
    - **Backend API**: `http://localhost:5000`
+
+---
+
+## 👨‍💻 About the Creator
+
+Developed and architected by **Priyanshu Singh**. 
+
+This system was built with a deep focus on solving real-world administrative challenges in educational institutes, emphasizing high-performance, responsive design, and enterprise-grade security.
+
+- **GitHub**: [@PriyanshuSingh10114](https://github.com/PriyanshuSingh10114)
+- **Project**: MKD-CampusConnect
 
 ---
 
