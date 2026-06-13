@@ -1,14 +1,16 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const { Student, Payment, FeeStructure, Admission } = require('./src/models');
-const fs = require('fs');
+const xlsx = require('xlsx');
 
 const importPayments = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('MongoDB connected.');
 
-    const data = JSON.parse(fs.readFileSync('C:/Users/hp/.gemini/antigravity/brain/eb18cfc1-ddea-41cd-95d7-4db9c488961c/scratch/excel/payments_utf8.json', 'utf-8'));
+    const wb = xlsx.readFile('MKD_100_Students_Payments.xlsx');
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const data = xlsx.utils.sheet_to_json(sheet);
 
     for (const item of data) {
       // Check if payment exists
