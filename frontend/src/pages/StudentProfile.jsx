@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,8 +12,27 @@ import api from '@/lib/api';
 export default function StudentProfile() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const id = searchParams.get('id');
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  useState(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const { data: studentsList, isLoading: isListLoading } = useQuery({
+    queryKey: ['studentsListProfile', debouncedSearch],
+    queryFn: async () => {
+      if (id) return null; // Don't fetch list if we are viewing a profile
+      const res = await api.get(`/students?search=${debouncedSearch}`);
+      return res.data.data;
+    },
+    enabled: !id
+  });
 
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({ personalDetails: {}, addressDetails: {} });
@@ -40,7 +59,47 @@ export default function StudentProfile() {
     }
   });
 
-  if (!id) return <div className="p-8 text-center text-muted-foreground">Select a student from the Admissions List first.</div>;
+  if (!id) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Student Profiles</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>Search Students</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Input 
+              placeholder="Search by Name, Admission No, or Mobile..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="max-w-md mb-6"
+            />
+            {isListLoading ? (
+              <div className="text-center py-8">Searching...</div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {studentsList?.map(student => (
+                  <div 
+                    key={student._id} 
+                    onClick={() => setSearchParams({ id: student._id })}
+                    className="p-4 border rounded-lg hover:border-brand-primary cursor-pointer hover:shadow-md transition-all bg-white dark:bg-slate-900"
+                  >
+                    <div className="font-semibold text-lg text-brand-secondary dark:text-white">{student.personalDetails?.studentName}</div>
+                    <div className="text-sm text-muted-foreground">{student.admissionNumber}</div>
+                    <div className="text-sm text-muted-foreground mt-2">{student.personalDetails?.mobile}</div>
+                  </div>
+                ))}
+                {(!studentsList || studentsList.length === 0) && (
+                  <div className="col-span-3 text-center py-8 text-muted-foreground">No students found.</div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (isLoading) return <div className="p-8 text-center">Loading Profile...</div>;
   if (!profileData || !profileData.student) return <div className="p-8 text-center text-red-500">Student not found.</div>;
 
@@ -63,7 +122,10 @@ export default function StudentProfile() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Student Profile</h2>
+        <div className="flex items-center space-x-4">
+          <Button variant="outline" size="sm" onClick={() => navigate('/profile')}>&larr; Back to Search</Button>
+          <h2 className="text-3xl font-bold tracking-tight text-brand-secondary dark:text-white">Student Profile</h2>
+        </div>
         {!isEditing ? (
           <Button onClick={handleEditClick} variant="outline"><Edit2 className="w-4 h-4 mr-2" /> Edit Profile</Button>
         ) : (

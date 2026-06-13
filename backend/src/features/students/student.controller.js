@@ -14,7 +14,7 @@ const getStudents = asyncHandler(async (req, res) => {
         ]
       };
     }
-    const students = await Student.find(query).limit(20);
+    const students = await Student.find(query);
     res.status(200).json({ success: true, data: students });
 });
 
